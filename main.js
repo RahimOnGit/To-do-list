@@ -1,18 +1,42 @@
-//errors
-//checkbox and input id are equals
+
 
 //check
 //the editing functionalty
 
+function newTaskElements(taskValue)
+{
 
+    let li = document.createElement("li");
+
+    let p = document.createElement("input");
+   let checkbox = document.createAttribute("input");
+   let deleteBtn = document.createElement("button");
+
+
+
+
+   p.setAttribute("value",taskValue);
+   p.style.border = "none";
+   p.disabled = true;
+   p.style.backgroundColor = "white";
+
+  
+   p.setAttribute("class","task-element");
+
+
+
+
+
+
+
+}
 
 
 class Task {
     constructor(text) {
         this.text = text;
         this.element = this.createTask();
-    
-    this.element.classList.add("theTask")
+        this.element.classList.add("theTask");
 
     
     }
@@ -184,7 +208,7 @@ deletebtn.addEventListener("click",()=>
 li.classList.add("theTask")
 
 
-    p.setAttribute("value",JSON.parse(localStorage.getItem(taskId)).text);
+    p.setAttribute("value",taskData.text);
     li.appendChild(checkbx);
     li.appendChild(p);
     li.appendChild(deletebtn);
@@ -193,7 +217,7 @@ li.classList.add("theTask")
 
 
 
-    console.log(JSON.parse(localStorage.getItem(taskId)).text);
+    console.log(taskData.text);
    
 
     document.body.querySelector("ol").appendChild(li);
