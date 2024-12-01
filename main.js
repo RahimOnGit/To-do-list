@@ -1,295 +1,88 @@
-
-
-//check
-//the editing functionalty
-
-function newTaskElements(taskValue)
-{
-
-    let li = document.createElement("li");
-
-    let p = document.createElement("input");
-   let checkbox = document.createAttribute("input");
-   let deleteBtn = document.createElement("button");
-
-
-
-
-   p.setAttribute("value",taskValue);
-   p.style.border = "none";
-   p.disabled = true;
-   p.style.backgroundColor = "white";
-
-  
-   p.setAttribute("class","task-element");
-
-
-
-
-
-
-
-}
-
-
 class Task {
-    constructor(text) {
+    constructor(text, checked = false) {
         this.text = text;
+        this.checked = checked;
         this.element = this.createTask();
-        this.element.classList.add("theTask");
-
-    
     }
 
+    createTask() {
+        const li = document.createElement("li");
+        li.classList.add("theTask");
 
+        const checkbx = document.createElement("input");
+        checkbx.type = "checkbox";
+        checkbx.classList.add("check");
+        checkbx.checked = this.checked;
 
- createTask()
-{
+        const input = document.createElement("input");
+        input.type = "text";
+        input.value = this.text;
+        input.classList.add("task-element");
+        input.disabled = true;
 
-    let li = document.createElement("li");
-    let p = document.createElement("input");
-    
-   p.setAttribute("value",this.text)
-   p.style.border = "none"
-   p.disabled = true
-   p.style.backgroundColor = "white"
+        const deletebtn = document.createElement("button");
+        deletebtn.classList.add("delete");
 
-  
-   p.setAttribute("class","task-element");
-   li.addEventListener("click",()=>{
+        li.appendChild(checkbx);
+        li.appendChild(input);
+        li.appendChild(deletebtn);
 
-    
-    if(p.disabled)
-    {
+        // Event Listeners
+        checkbx.addEventListener("change", () => {
+            input.classList.toggle("checked", checkbx.checked);
+            this.checked = checkbx.checked;
+            saveTasks();
+        });
 
+        deletebtn.addEventListener("click", () => {
+            li.remove();
+            taskList = taskList.filter((task) => task !== this);
+            saveTasks();
+        });
 
-        p.disabled = false;
-        p.focus();
+        input.addEventListener("dblclick", () => {
+            input.disabled = false;
+            input.focus();
+        });
+
+        input.addEventListener("blur", () => {
+            input.disabled = true;
+            this.text = input.value;
+            saveTasks();
+        });
+
+        return li;
     }
-   
-   
-   });
-
-//li.innerHTML = '<input type="checkbox" id="check">' +p.outerHTML+ '<button class="delete"> </button>';
-    
-
-//creating the checkbox
-
-
-
-let checkbx = document.createElement("input");
-checkbx.type = "checkbox";
-checkbx.classList.add( "check");
-
-
-
-let deletebtn = document.createElement("button");
-deletebtn.classList.add("delete");
-
-
-li.appendChild(checkbx);
-li.appendChild(p);
-li.appendChild(deletebtn);
-
-
-const deleteBtn = li.querySelector("button");
-deleteBtn.addEventListener("click",()=>{
-
-    li.remove();
-    taskList.splice(taskList.indexOf(li),1)
-});
-
-//let paragraph = li.querySelector("#task-element");
-
-checkbx.addEventListener("change",()=>{
-    this.taskDone(checkbx,p);
-    p.disabled = true;
-})
-
-
-return li;
-
 }
 
-
-
- taskDone(checkbox,p) {
-
-
-    if(checkbox.checked)
-        {
-        p.classList.add("checked");
-        return true
-   
+let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
+//!
+function saveTasks() {
+    localStorage.setItem(
+        "tasks",
+        JSON.stringify(taskList.map((task) => ({ text: task.text, checked: task.checked })))
+    );
 }
-else
-{
-    p.classList.remove("checked");
-    return false
-   
-}
+//---
+function addTask() {
+    const taskInput = document.getElementById("task-input");
+    const taskText = taskInput.value.trim();
+    if (!taskText) return;
 
-}
-
-}
-
-// function taskChecked(checkbtn)
-// {
-// if(checkbtn.checked())
-// }
-
-
-
-
-let taskList = [];
-let taskId = 0;
-
-function addTask()
-{
-    const taskText = document.getElementById("task-input").value;
-if(taskText)
-{
     const task = new Task(taskText);
     taskList.push(task);
-    
-    localStorage.setItem(taskId,JSON.stringify(task));
-    taskId++;
+    document.querySelector("ol").appendChild(task.element);
 
-    console.log(task.text)
-   document.querySelector("ol").appendChild(task.element);
-   document.querySelector("#task-input").value= "";
-
+    saveTasks();
+    taskInput.value = ""; 
 }
 
+function getTasks() {
+    taskList = JSON.parse(localStorage.getItem("tasks")) || [];
+    taskList = taskList.map((task) => new Task(task.text, task.checked));
+    const list = document.querySelector("ol");
+    list.innerHTML = "";
+    taskList.forEach((task) => list.appendChild(task.element));
 }
 
-
-function getTasks()
-{
-    for (let i = 0; i < localStorage.length; i++) {
-
-let taskId = localStorage.key(i);
-let taskData = JSON.parse(localStorage.getItem(taskId));
-
-    let li = document.createElement("li");
-    let p = document.createElement("input");
-    
-   p.setAttribute("value",this.text)
-   p.style.border = "none"
-   p.disabled = true
-   p.style.backgroundColor = "white"
-
-  
-   p.setAttribute("class","task-element");
-
-
-
-let checkbx = document.createElement("input");
-checkbx.type = "checkbox";
-checkbx.classList.add( "check");
-
-
-
-let deletebtn = document.createElement("button");
-deletebtn.classList.add("delete");
-
-
-deletebtn.addEventListener("click",()=>
-{
-
-    li.remove();
-    taskList.splice(taskList.indexOf(li),1);
-    localStorage.removeItem(taskId); 
-        
-});
-
-
-
-li.classList.add("theTask")
-
-
-    p.setAttribute("value",taskData.text);
-    li.appendChild(checkbx);
-    li.appendChild(p);
-    li.appendChild(deletebtn);
-
-
-
-
-
-    console.log(taskData.text);
-   
-
-    document.body.querySelector("ol").appendChild(li);
-
-
-
-
-
-
-}
-
-}
-
-getTasks()
-
-
-
-// function addTask2()
-// {
-//     const taskText = document.getElementById("task-input").value;
-// if(taskText)
-// {
-//     const task = new Task(taskText);
-//     taskList.push(task);
-
-
-// document.body.addEventListener("click",(event)=>
-// {
-
-// if(event.target.textContent ==="Morning")
-// {
-//     document.querySelector(".list-section .morning").appendChild(task.element);
-//     document.querySelector("#task-input").value= "";
- 
-// }
-//  else if(event.target.textContent=="Afternoon")
-//     {
-//         document.querySelector(".list-section .afternoon").appendChild(task.element);
-//         document.querySelector("#task-input").value= "";
-     
-//     }   
-//     else if(event.target.textContent ==="Night")
-//     {
-//         document.querySelector(".list-section .night").appendChild(task.element);
-//         document.querySelector("#task-input").value= "";
-//     }
-    
-// })
-
-   
-// }
-// }
-
-// document.body.addEventListener("click",(event)=>
-// {
-// if(event.target.textContent =="Morning")
-// {
-// console.log("you clicked morning")
-// } 
-
-// else if(event.target.textContent =="Afternoon")
-// {
-// console.log("you clicked afternoon")
-// }
-// else if(event.target.textContent =="Night")
-// {
-// console.log("you clicked Night")
-// }
-
-
-
-
-// });
-
-
+getTasks();
