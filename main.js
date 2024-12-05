@@ -18,13 +18,20 @@ class Task {
         input.type = "text";
         input.value = this.text;
         input.classList.add("task-element");
-        input.disabled = true;
+        // input.disabled = true;
 
         const deletebtn = document.createElement("button");
         deletebtn.classList.add("delete");
 
+//herr
+        const editbtn = document.createElement("button");
+        // editbtn.textContent = "edit";
+        editbtn.setAttribute("class","edit");
+
         li.appendChild(checkbx);
         li.appendChild(input);
+        //here
+        li.appendChild(editbtn);
         li.appendChild(deletebtn);
 
         // Event Listeners
@@ -40,16 +47,27 @@ class Task {
             saveTasks();
         });
 
-        input.addEventListener("dblclick", () => {
-            input.disabled = false;
-            input.focus();
+ editbtn.addEventListener("click", () => {
+    
+    this.text = input.value;
+    saveTasks();
+
+
+           
         });
 
-        input.addEventListener("blur", () => {
-            input.disabled = true;
-            this.text = input.value;
-            saveTasks();
-        });
+
+        //here unlock
+        // input.addEventListener("dblclick", () => {
+        //     input.disabled = false;
+        //     input.focus();
+        // });
+
+        // input.addEventListener("blur", () => {
+        //     input.disabled = true;
+        //     this.text = input.value;
+        //     saveTasks();
+        // });
 
         return li;
     }
@@ -59,8 +77,7 @@ let taskList = JSON.parse(localStorage.getItem("tasks")) || [];
 //!
 function saveTasks() {
     localStorage.setItem(
-        "tasks",
-        JSON.stringify(taskList.map((task) => ({ text: task.text, checked: task.checked })))
+        "tasks", JSON.stringify(taskList.map((task) => ({ text: task.text, checked: task.checked })))
     );
 }
 //---
